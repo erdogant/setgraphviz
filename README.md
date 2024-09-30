@@ -28,8 +28,11 @@ Based on the operating system, it will download graphviz and include the paths i
 There are multiple steps that are taken to set the Graphviz path in the system environment.
 The first two steps are automatically skipped if already present.
 
+
 Step 1. Downlaod Graphviz.
+
 Step 2. Store Graphviz files on disk in temp-directory or the provided dirpath.
+
 Step 3. Add the /bin directory to environment.
 
 
