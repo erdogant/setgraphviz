@@ -12,13 +12,6 @@ import requests
 import logging
 import zipfile
 import tempfile
-
-logger = logging.getLogger('')
-[logger.removeHandler(handler) for handler in logger.handlers[:]]
-console = logging.StreamHandler()
-formatter = logging.Formatter('[setgraphviz] >%(levelname)s> %(message)s')
-console.setFormatter(formatter)
-logger.addHandler(console)
 logger = logging.getLogger(__name__)
 
 
@@ -226,6 +219,14 @@ def set_logger(verbose: [str, int] = 'info'):
     # Show examples
     logger.setLevel(verbose)
 
+
+def check_logger(verbose: [str, int] = 'info'):
+    """Check the logger."""
+    set_logger(verbose)
+    logger.debug('DEBUG')
+    logger.info('INFO')
+    logger.warning('WARNING')
+    logger.critical('CRITICAL')
 
 # %% Main
 if __name__ == "__main__":
