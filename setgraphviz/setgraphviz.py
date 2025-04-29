@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 # %% Get graphiz path and include into local PATH
-def setgraphviz(dirpath=None, verbose: [str, int] = 'info'):
+def setgraphviz(dirpath=None, verify: bool = True, verbose: [str, int] = 'info'):
     """Set the graphviz path.
 
     There are multiple steps that are taken to set the Graphviz path in the system environment for windows machines.
@@ -30,6 +30,9 @@ def setgraphviz(dirpath=None, verbose: [str, int] = 'info'):
     ----------
     dirpath : String, optional
         Pathname of directory to save graphviz files.
+    verify : bool (default: True)
+        True: Verify the certificates
+        False: Do not verify
     verbose : [str, int], optional
         Set the verbose messages using string or integer values.
 
@@ -45,7 +48,7 @@ def setgraphviz(dirpath=None, verbose: [str, int] = 'info'):
     finPath=''
     if get_platform() == "windows":
         # Download from github
-        gfile, curpath = download_graphviz(URL, dirpath=dirpath)
+        gfile, curpath = download_graphviz(URL, dirpath=dirpath, verify=True)
 
         # curpath = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'GRAPHVIZ')
         # filesindir = os.listdir(curpath)[0]
@@ -98,13 +101,16 @@ def get_platform():
 
 
 # %% Import example dataset from github.
-def download_graphviz(url, dirpath=None):
+def download_graphviz(url, dirpath=None, verify=True):
     """Import example dataset from github.
 
     Parameters
     ----------
     url : str, optional
         url-Link to graphviz. The default is 'https://erdogant.github.io/datasets/graphviz-2.38.zip'.
+    verify : bool (default: True)
+        True: Verify the certificates
+        False: Do not verify
 
     Returns
     -------
@@ -128,7 +134,7 @@ def download_graphviz(url, dirpath=None):
     if not os.path.isfile(PATH_TO_DATA):
         # Download data from URL
         logger.info('Downloading graphviz..')
-        wget.download(url, dirpath)
+        wget.download(url, dirpath, verify=verify)
 
     return gfile, dirpath
 
@@ -141,7 +147,7 @@ class wget:
         """Return filename."""
         return os.path.basename(url)
 
-    def download(url, writepath):
+    def download(url, writepath, verify=True):
         """Download.
 
         Parameters
@@ -150,6 +156,9 @@ class wget:
             Internet source.
         writepath : str.
             Directory to write the file.
+        verify : bool (default: True)
+            True: Verify
+            False: Do not verify
 
         Returns
         -------
@@ -161,7 +170,7 @@ class wget:
         os.makedirs(os.path.dirname(writepath), exist_ok=True)
         writepath = os.path.join(writepath, filename)
         # Set the folder to write mode (read, write, and execute)
-        r = requests.get(url, stream=True)
+        r = requests.get(url, stream=True, verify=verify)
         # Check for HTTP errors (e.g., 404, 500)
         r.raise_for_status()
         # Write to disk
