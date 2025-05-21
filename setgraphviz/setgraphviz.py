@@ -12,6 +12,7 @@ import requests
 import logging
 import zipfile
 import tempfile
+import shutil
 logger = logging.getLogger(__name__)
 
 
@@ -56,8 +57,16 @@ def setgraphviz(dirpath=None, verify_certificate: bool = True, verbose: [str, in
         dirname = gfile[:-idx]
         getPath = os.path.abspath(os.path.join(curpath, dirname))
         getZip = os.path.abspath(os.path.join(curpath, gfile))
+
+        # Count files (excluding subdirectories): There should be 103 files
+        file_count = sum(len(files) for _, _, files in os.walk(getPath))
+
         # Unzip if path does not exists
-        if not os.path.isdir(getPath):
+        if not os.path.isdir(getPath) or file_count != 103:
+            if os.path.exists(finPath) and os.path.isdir(finPath):
+                shutil.rmtree(finPath)
+                logger.info(f"Deleting existing corrupt directory: {finPath}")
+
             logger.info('Extracting graphviz files.')
             pathname, _ = os.path.split(getZip)
             # Unzip
