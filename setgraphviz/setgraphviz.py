@@ -234,6 +234,14 @@ def set_logger(verbose: [str, int] = 'info'):
                   'critical': 50}
         verbose = levels[verbose]
 
+    # Configure root logger if no handlers exist
+    if not logger.handlers:
+        handler = logging.StreamHandler()
+        fmt = '[{asctime}] [{name}] [{levelname}] {msg}'
+        formatter = logging.Formatter(fmt=fmt, style='{', datefmt='%d-%m-%Y %H:%M:%S')
+        handler.setFormatter(formatter)
+        logger.addHandler(handler)
+
     # Show examples
     logger.setLevel(verbose)
 
